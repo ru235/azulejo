@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #f3eee4;
+  --color-paper: #fffcf6;
+  --color-ink: #1a2230;
+  --color-muted: #6a6258;
+  --color-subtle: #8a8278;
+  --color-line: #ddd4c6;
+  --color-azulejo: #1e4d8c;
+  --color-azulejo-deep: #163a6b;
+  --color-azulejo-soft: #e4ebf6;
+  --color-tile: #2a62b3;
+  --color-good: #2f6b4f;
+  --color-good-soft: #e6f0ea;
+  --color-warn: #9a5b24;
+  --color-warn-soft: #f4eadc;
+  --color-bad: #8f2d2d;
+  --color-bad-soft: #f6e4e2;
+
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  --shadow-border:
+    0px 0px 0px 1px rgba(26, 34, 48, 0.06),
+    0px 1px 2px -1px rgba(26, 34, 48, 0.06),
+    0px 2px 4px 0px rgba(26, 34, 48, 0.04);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html,
+  body,
+  #app {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

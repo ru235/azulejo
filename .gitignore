@@ -1,0 +1,16 @@
+node_modules
+.output
+.vercel
+dist
+.git
+.DS_Store
+*.log
+.env
+.env.local
+screenshots
+artifacts
+/tmp
+coverage
+
+# keep deploy secrets out of git
+caddy_data

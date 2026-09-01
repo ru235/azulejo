@@ -1,0 +1,12 @@
+node_modules
+.output
+.vercel
+dist
+.git
+.gitignore
+screenshots
+artifacts
+.env
+.env.local
+*.log
+.DS_Store

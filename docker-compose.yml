@@ -1,0 +1,46 @@
+services:
+  app:
+    build: .
+    image: azulejo-app
+    restart: unless-stopped
+    # No published ports: only Caddy talks to the app, over the internal network.
+    expose:
+      - "3000"
+    environment:
+      - NODE_ENV=production
+      - HOST=0.0.0.0
+      - PORT=3000
+      # Auth off — progress is stored in each visitor's browser (localStorage),
+      # so there is no database and no personal data on the server.
+      - VITE_AUTH_ENABLED=false
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    networks:
+      - web
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp" # HTTP/3
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data # Let's Encrypt certs + account keys — keep this volume
+      - caddy_config:/config
+    depends_on:
+      - app
+    networks:
+      - web
+
+networks:
+  web:
+
+volumes:
+  caddy_data:
+  caddy_config:

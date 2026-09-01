@@ -1,0 +1,38 @@
+# Caddy issues and renews the Let's Encrypt certificate automatically once
+# azulejo.convertmedia.ru resolves to this server (ACME HTTP-01 needs port 80
+# reachable). Until the DNS is switched, the IP block below serves the app over
+# plain HTTP so it can be checked; ACME just keeps retrying in the background.
+
+(app) {
+	encode zstd gzip
+
+	header {
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	# Content-hashed bundles are immutable.
+	@immutable path /assets/* /__grok/*
+	header @immutable Cache-Control "public, max-age=31536000, immutable"
+
+	reverse_proxy app:3000
+}
+
+azulejo.convertmedia.ru {
+	import app
+	# Only sent over HTTPS, so it cannot pin a visitor to plain HTTP by mistake.
+	header Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+	log {
+		output file /data/access.log {
+			roll_size 10MiB
+			roll_keep 5
+		}
+	}
+}
+
+# Pre-DNS smoke check by IP. Safe to delete once the domain is live.
+http://77.110.96.45 {
+	import app
+}
