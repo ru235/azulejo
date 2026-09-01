@@ -2,6 +2,7 @@ import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-r
 import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import { AppShell } from "@/components/app-shell";
+import { themeInitScript } from "@/lib/theme";
 import appCss from "../styles.css?url";
 
 const APP_NAME = "Azulejo";
@@ -34,6 +35,7 @@ export const Route = createRootRoute({
   component: () => (
     <html lang="ru" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <HeadContent />
       </head>
       <body>

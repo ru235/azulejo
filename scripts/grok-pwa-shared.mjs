@@ -158,23 +158,31 @@ export function renderInstallPageHtml(template, { host, url } = {}) {
 }
 
 export function renderWebManifest(hostHeader) {
-  const name = appNameFromHost(hostHeader);
+  // Prefer site.json title ("Azulejo") over the Grok.me host slug. For custom
+  // domains like azulejo.convertmedia.ru, appNameFromHost() falls back to
+  // "Grok App" — resolveOgTitle() falls through to site.title instead.
+  const site = readOgSite();
+  const appName = resolveOgTitle(site, DEFAULT_APP_NAME, hostHeader, "");
+  const name = appName !== DEFAULT_APP_NAME ? appName : site.title?.trim() || "Azulejo";
+  const shortName = site.title?.trim()?.split(" — ")[0]?.split(" - ")[0] || name;
+  const description =
+    site.description?.trim() || "Португальский с нуля: правила чтения, алфавит и первые слова.";
   return JSON.stringify(
     {
       name,
-      short_name: name,
+      short_name: shortName.slice(0, 12),
+      description,
       id: "/",
       start_url: "/",
       scope: "/",
       display: "standalone",
-      background_color: "#000000",
-      theme_color: "#000000",
+      background_color: "#FFFCF6",
+      theme_color: "#1E4D8C",
       icons: [
-        {
-          src: "/__grok/icon-180.png",
-          sizes: "180x180",
-          type: "image/png",
-        },
+        { src: "/__grok/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
+        { src: "/__grok/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
+        { src: "/__grok/icon-512-maskable.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+        { src: "/__grok/icon-180.png", sizes: "180x180", type: "image/png", purpose: "any" },
       ],
     },
     null,
@@ -188,15 +196,18 @@ export function grokPwaHeadTags(appName = DEFAULT_APP_NAME) {
     // the legacy *-web-app-capable metas it replaces are deliberately absent.
     ["manifest", '<link rel="manifest" href="/__grok/manifest.webmanifest">'],
     ["apple-touch-icon", '<link rel="apple-touch-icon" href="/__grok/icon-180.png">'],
+    ["apple-touch-icon-192", '<link rel="icon" type="image/png" sizes="192x192" href="/__grok/icon-192.png">'],
+    ["apple-touch-icon-512", '<link rel="icon" type="image/png" sizes="512x512" href="/__grok/icon-512.png">'],
     [
       "apple-mobile-web-app-title",
       `<meta name="apple-mobile-web-app-title" content="${escapeHtml(appName)}">`,
     ],
     [
       "apple-mobile-web-app-status-bar-style",
-      '<meta name="apple-mobile-web-app-status-bar-style" content="black">',
+      '<meta name="apple-mobile-web-app-status-bar-style" content="default">',
     ],
-    ["theme-color", '<meta name="theme-color" content="#000000">'],
+    ["theme-color", '<meta name="theme-color" content="#1E4D8C">'],
+    ["theme-color-dark", '<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f2a52">'],
   ];
 }
 

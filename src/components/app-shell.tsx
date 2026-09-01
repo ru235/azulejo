@@ -3,6 +3,7 @@ import { BookOpenCheck, Menu } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AzulejoBand, AzulejoMark } from "@/components/azulejo-mark";
 import { DialectToggle } from "@/components/dialect-toggle";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { preloadVoices } from "@/lib/speech";
 import { navItems, practiceItem } from "@/lib/data/nav";
 import { useProgress } from "@/lib/store";
@@ -61,6 +62,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </span>
           </Link>
           <div className="ml-auto flex items-center gap-2">
+            <ThemeToggle />
             <DialectToggle />
             <button
               type="button"

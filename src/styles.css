@@ -36,6 +36,21 @@
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    color-scheme: light dark;
+  }
+
+  html.dark {
+    --color-bg: #0f141e;
+    --color-paper: #1c2533;
+    --color-ink: #e8e9ed;
+    --color-muted: #9aa0ac;
+    --color-subtle: #7a828e;
+    --color-line: #273246;
+    --color-azulejo-soft: #1e334e;
+    --color-good-soft: #1a2f24;
+    --color-warn-soft: #2f2718;
+    --color-bad-soft: #2e1a1f;
+    color-scheme: dark;
   }
 
   html,
