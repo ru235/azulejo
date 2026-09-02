@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { AzulejoMark } from "@/components/azulejo-mark";
 import { Button } from "@/components/ui/button";
+import { quizzes } from "@/lib/data/quiz";
 import { dialectNotes } from "@/lib/data/reading";
 import { LESSON_IDS, useProgress } from "@/lib/store";
 import { cn } from "@/lib/utils";
@@ -56,7 +57,7 @@ const lessons = [
     to: "/praktika",
     id: "praktika" as const,
     title: "Практика",
-    text: "Короткий тест на правила чтения.",
+    text: "6 тестов по 12 вопросов на каждый раздел.",
     icon: Volume2,
   },
 ];
@@ -64,9 +65,10 @@ const lessons = [
 function Home() {
   const completed = useProgress((s) => s.completed);
   const dialect = useProgress((s) => s.dialect);
-  const quizBest = useProgress((s) => s.quizBest);
+  const quizScores = useProgress((s) => s.quizScores);
   const heard = useProgress((s) => s.heard);
   const doneCount = LESSON_IDS.filter((id) => completed.includes(id)).length;
+  const passedQuizzes = quizzes.filter((q) => (quizScores[q.id] ?? 0) >= 8).length;
   const notes = dialectNotes[dialect];
 
   return (
@@ -106,10 +108,7 @@ function Home() {
       <div className="mt-6 grid grid-cols-3 gap-3">
         <Stat label="Разделы" value={`${doneCount}/${LESSON_IDS.length}`} />
         <Stat label="Прослушано" value={`${heard}`} />
-        <Stat
-          label="Тест"
-          value={quizBest ? `${quizBest}/12` : "—"}
-        />
+        <Stat label="Тесты" value={`${passedQuizzes}/${quizzes.length}`} />
       </div>
 
       <section className="mt-10">

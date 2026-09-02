@@ -20,6 +20,9 @@ interface ProgressState {
   markComplete: (id: LessonId) => void;
   quizBest: number;
   setQuizBest: (score: number) => void;
+  /** Best score per test id (see lib/data/quiz). */
+  quizScores: Record<string, number>;
+  setQuizScore: (quizId: string, score: number) => void;
   heard: number;
   bumpHeard: () => void;
 }
@@ -39,9 +42,24 @@ export const useProgress = create<ProgressState>()(
       setQuizBest: (score) => {
         if (score > get().quizBest) set({ quizBest: score });
       },
+      quizScores: {},
+      setQuizScore: (quizId, score) => {
+        const scores = get().quizScores;
+        if ((scores[quizId] ?? 0) >= score) return;
+        set({ quizScores: { ...scores, [quizId]: score } });
+      },
       heard: 0,
       bumpHeard: () => set({ heard: get().heard + 1 }),
     }),
-    { name: "azulejo-progress" },
+    {
+      name: "azulejo-progress",
+      version: 1,
+      // v0 stored only `quizBest`; give existing visitors the new map instead
+      // of `undefined`, which would crash every `quizScores[...]` read.
+      migrate: (state) => ({
+        quizScores: {},
+        ...(state as Partial<ProgressState>),
+      }) as ProgressState,
+    },
   ),
 );
